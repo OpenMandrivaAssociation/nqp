@@ -20,6 +20,7 @@ BuildRequires:	readline-devel gmp-devel icu-devel
 BuildRequires:	perl(Test::Harness)
 BuildRequires:	parrot >= %{parrot_version}
 BuildRequires:	parrot-devel >= %{parrot_version}
+BuildRequires:	parrot-src >= %{parrot_version}
 
 Requires:	parrot >= %{parrot_version}
 
