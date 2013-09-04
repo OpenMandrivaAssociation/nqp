@@ -40,10 +40,16 @@ for the virtual machine.
 %prep
 %setup -q -n %{name}-%{year}.%{month}
 
-
 %build
+mkdir -p BFD
+ln -sf /usr/bin/ld.bfd BFD/ld
+export PATH=$PWD/BFD:$PATH
+
+%ifarch %arm
+sed -i 's!sh configure!sh configure --target-arm-arm!g' Configure.pl
+%endif
 %{__perl} Configure.pl
-make
+CFLAGS="$RPM_OPT_FLAGS -fPIC" make
 
 
 %install
