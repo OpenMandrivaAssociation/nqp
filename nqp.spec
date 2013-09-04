@@ -21,6 +21,7 @@ BuildRequires:	perl(Test::Harness)
 BuildRequires:	parrot >= %{parrot_version}
 BuildRequires:	parrot-devel >= %{parrot_version}
 BuildRequires:	parrot-src >= %{parrot_version}
+BuildRequires:	perl-devel
 
 Requires:	parrot >= %{parrot_version}
 
