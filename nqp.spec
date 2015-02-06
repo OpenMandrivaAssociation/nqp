@@ -8,7 +8,7 @@
 
 Name:		nqp
 Version:	0.0.%{year}.%{month}
-Release:	1
+Release:	2
 Summary:	Not Quite Perl (6)
 
 Group:		Development/Perl
