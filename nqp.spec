@@ -1,29 +1,19 @@
-%define year 2013
-%define month 08
-%define parrot_version 5.7.0
-%define _disable_ld_no_undefined 1
-
-%define PAR_LIB_DIR %{_libdir}/parrot/%{parrot_version}
-%define parrot_dynext %{PAR_LIB_DIR}/dynext
+%undefine _debugsource_packages
 
 Name:		nqp
-Version:	0.0.%{year}.%{month}
-Release:	2
+Version:	2024.06
+Release:	1
 Summary:	Not Quite Perl (6)
 
 Group:		Development/Perl
 License:	Artistic 2.0 and ISC and WTFPL
 URL:		https://github.com/perl6/nqp
-Source0:	http://rakudo.org/downloads/nqp/nqp-%{year}.%{month}.tar.gz
+Source0:	https://github.com/Raku/nqp/releases/download/%{version}/nqp-%{version}.tar.gz
 
 BuildRequires:	readline-devel gmp-devel icu-devel
 BuildRequires:	perl(Test::Harness)
-BuildRequires:	parrot >= %{parrot_version}
-BuildRequires:	parrot-devel >= %{parrot_version}
-BuildRequires:	parrot-src >= %{parrot_version}
+BuildRequires:	pkgconfig(moar)
 BuildRequires:	perl-devel
-
-Requires:	parrot >= %{parrot_version}
 
 %description
 This is "Not Quite Perl" -- a compiler for quickly generating PIR routines
@@ -38,46 +28,21 @@ for the virtual machine.
 
 
 %prep
-%setup -q -n %{name}-%{year}.%{month}
+%autosetup -p1
 
 %build
-mkdir -p BFD
-ln -sf /usr/bin/ld.bfd BFD/ld
-export PATH=$PWD/BFD:$PATH
-
-%ifarch %arm
-sed -i 's!sh configure!sh configure --target-arm-arm!g' Configure.pl
-%endif
-%{__perl} Configure.pl
+# FIXME js backend seems to require a different version of v8
+# FIXME jvm backend fails to "make install" because of lacking DESTDIR support
+%{__perl} Configure.pl --backends moar --prefix %{_prefix}
 CFLAGS="$RPM_OPT_FLAGS -fPIC" make
 
-
 %install
-%makeinstall_std
-
-# Force executable permission on shared objects so they get stripped
-%{__chmod} 755 %{buildroot}%{parrot_dynext}/nqp*.so
+%make_install
 
 %check
-%ifarch %{ix86}
-  # This test fails on this architecture
-  %{__rm} -f t/nqp/60-bigint.t
-%endif
 make test
 
 %files
-%doc CREDITS LICENSE README.pod docs examples
 %{_bindir}/nqp
-
-# The unversioned shared system library files are needed for the essential work
-# of the nqp executable, otherwise the executing of nqp fails
-# with error message "PARROT VM: Could not load bytecode ..."
-%{parrot_dynext}/nqp_group.so
-%{parrot_dynext}/nqp_ops.so
-%{parrot_dynext}/nqp_bigint_ops.so
-%{parrot_dynext}/nqp_dyncall_ops.so
-
-%{PAR_LIB_DIR}/languages/nqp
-%{PAR_LIB_DIR}/library/ModuleLoader.pbc
-%{PAR_LIB_DIR}/include/nqp_const.pir
-%{_includedir}/parrot/%{parrot_version}/dynpmc/pmc_*
+%{_bindir}/nqp-m
+%{_datadir}/nqp/lib/*
