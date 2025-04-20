@@ -1,7 +1,7 @@
 %undefine _debugsource_packages
 
 Name:		nqp
-Version:	2024.10
+Version:	2025.04
 Release:	1
 Summary:	Not Quite Perl (6)
 
