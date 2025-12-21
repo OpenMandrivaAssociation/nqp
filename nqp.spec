@@ -10,6 +10,7 @@ License:	Artistic 2.0 and ISC and WTFPL
 URL:		https://github.com/perl6/nqp
 Source0:	https://github.com/Raku/nqp/releases/download/%{version}/nqp-%{version}.tar.gz
 
+BuildRequires:	make
 BuildRequires:	readline-devel gmp-devel icu-devel
 BuildRequires:	perl(Test::Harness)
 BuildRequires:	pkgconfig(moar)
